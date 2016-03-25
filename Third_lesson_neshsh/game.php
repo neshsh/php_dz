@@ -38,7 +38,7 @@
         echo "<div class = 'raw'>";
         foreach ($raw as $j => $value) {
             for ($z=0; $z<count($array_labirint[$i]); $z++) {
-                if ($man[0]==$array_labirint[$z][$man[0]]) {
+                if (($man[0]==$array_labirint[$z][$man[0]]&&($array_labirint[$z][$man[0]]==2))) {
                     echo "<div class='info'>В этом столбце спрятано золото<br /> Еще его можно найти в каждой строчке!!!</div>";
                 }
             }
@@ -70,8 +70,9 @@
         }
         echo "</div>";
     }
-
-    //print_r($array_labirint);
+    echo "<pre>";
+    print_r($array_labirint);
+    echo "</pre>";
     ?>
 
 </body>
