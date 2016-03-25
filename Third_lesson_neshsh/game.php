@@ -70,9 +70,9 @@
         }
         echo "</div>";
     }
-    echo "<pre>";
+    /*echo "<pre>";
     print_r($array_labirint);
-    echo "</pre>";
+    echo "</pre>";*/
     ?>
 
 </body>
