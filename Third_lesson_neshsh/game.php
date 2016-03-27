@@ -20,16 +20,19 @@
         for ($y = 0; $y < 10; $y++) {
             $array_labirint[] = [];
             for ($x = 0; $x < 10; $x++) {
-                $array_labirint[$y][$x] = mt_rand(0, 2);
-                $is_it_gold = array_keys($array_labirint[$y], 2);
+                $array_labirint[$y][$x] = mt_rand(0, 1);
+                /*$is_it_gold = array_keys($array_labirint[$y], 2);
                 $how_much_gold = count(array_keys($array_labirint[$y], 2));
                 // set only one gold in raw:
                 if ($how_much_gold > 1) {
                     for ($n = 1; $n < $how_much_gold; $n++) {
                         $array_labirint[$y][$is_it_gold[$n]] = 0;
                     }
-                }
+                }*/
+                //$a=[0,2];
+                //echo $a[mt_rand(0, count($a) - 1)];
             }
+            $array_labirint[$y][mt_rand(0, 9)] = mt_rand(0, 1) ? '0' : '2';
         }
         return $array_labirint;
     }
@@ -70,9 +73,9 @@
         }
         echo "</div>";
     }
-    /*echo "<pre>";
+    echo "<pre>";
     print_r($array_labirint);
-    echo "</pre>";*/
+    echo "</pre>";
     ?>
 
 </body>
