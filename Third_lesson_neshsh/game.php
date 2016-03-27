@@ -1,3 +1,7 @@
+<?php
+$_SESSION['array_labirint'] = create_matrix();
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +40,10 @@
         }
         return $array_labirint;
     }
-    $array_labirint = create_matrix();
+
+    //$_SESSION['array_labirint'] = create_matrix();
+    $array_labirint = $_SESSION['array_labirint'];
+
     foreach ($array_labirint as $i => $raw) {
         echo "<div class = 'raw'>";
         foreach ($raw as $j => $value) {
