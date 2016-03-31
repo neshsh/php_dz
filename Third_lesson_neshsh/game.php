@@ -1,5 +1,28 @@
 <?php
 session_start();
+//echo $_SESSION['auth'] = [$_POST['username'], $_POST['password']];
+/*echo "<form action='game.php' method='post'>
+                    Username: <input type='text' name='username' value='' /><br />
+                    Password: <input type='password' name='password' value='' /><br /><br />
+                    <input type='submit' name='submit' value='submit' />
+              </form> ";
+echo $_POST['username'];
+if (isset($_POST['username']) && isset($_POST['password'])) {
+    $_SESSION['auth'] = $_POST['username'];
+}
+echo $_SESSION['auth'];*/
+if (!isset($_SESSION['auth'])) {
+    echo "<form action='game.php' method='post'>
+                    Username: <input type='text' name='username' value='' /><br />
+                    Password: <input type='password' name='password' value='' /><br /><br />
+                    <input type='submit' name='submit' value='submit' />
+              </form> ";
+    if (isset($_POST['username']) && isset($_POST['password'])) {
+        $_SESSION['auth'] = [$_POST['username'], $_POST['password']];
+    }
+} else {
+   echo $_SESSION['auth'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +73,7 @@ session_start();
                 echo "<div class='info'>" . $string . "</div>";
             }
             if ($column and $string) {
-                echo "<div class='info'>" . $column . "<br />" . $string . "</div>";
+                echo "<div class='info'>" . $column . $string . "</div>";
             }
         }
         echo "<div class = 'raw'>";
