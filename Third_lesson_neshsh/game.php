@@ -41,13 +41,18 @@ session_start();
     foreach ($array_labirint as $i => $raw) {
         // поиск золота в строчках и столбцах
         foreach ($raw as $z => $golden) {
-                if (($man[0]==$z&&($golden==2))) {
-                    echo "<div class='info'>В этом столбце спрятано золото<br /> Еще его можно найти в каждой строчке!!!</div>";
-                }
-                if (($man[1]==$i&&($golden==2))) {
-                    echo "<div class='info'>В этой строчке спрятано золото<br /></div>";
-                }
+            if (($man[0] == $z && ($golden == 2))) {
+                $column = "В этом столбце спрятано золото<br />";
+                echo "<div class='info'>" . $column . "</div>";
             }
+            if (($man[1] == $i && ($golden == 2))) {
+                $string = "В этой строчке спрятано золото<br />";
+                echo "<div class='info'>" . $string . "</div>";
+            }
+            if ($column and $string) {
+                echo "<div class='info'>" . $column . "<br />" . $string . "</div>";
+            }
+        }
         echo "<div class = 'raw'>";
         foreach ($raw as $j => $value) {
             switch ($value) {
