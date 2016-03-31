@@ -35,11 +35,13 @@ if (!isset($_SESSION['auth'])) {
 <h1>Game Labirint</h1>
 <h2>Можно передвигаться по лабиринту с помощью GET запросов:  дописываем в адресе: ?x='ваши координаты'&&y='ваши координаты'</h2>
     <?php
-    $man = array(1, 1);
-    $man[0] = $_GET['x'];
-    $man[1] = $_GET['y'];
+    //$man = array(1, 1);
+    //$man[0] = $_GET['x'];
+    //$man[1] = $_GET['y'];
     //var_dump($man);
     //$array_labirint = array();
+    if (!isset($_SESSION['gold'])) $_SESSION['gold'] = 0;
+
     function create_matrix()
     {
         $array_labirint = array();
@@ -60,6 +62,22 @@ if (!isset($_SESSION['auth'])) {
     }
 
     $array_labirint = $_SESSION['matrix'];
+
+    // создаем управление игроком
+
+    if (!isset($_SESSION['player'])) {
+        $_SESSION['player'] = [0, 0];
+    } else {
+        if (isset($_POST['down'])) $_SESSION['player'][1]++;
+        if (isset($_POST['up'])) $_SESSION['player'][1]--;
+        if (isset($_POST['right'])) $_SESSION['player'][0]++;
+        if (isset($_POST['left'])) $_SESSION['player'][0]--;
+        if ($_SESSION['player'][0]<0) $_SESSION['player'][0] = 0;
+        if ($_SESSION['player'][1]<0) $_SESSION['player'][1] = 0;
+        if ($_SESSION['player'][1]>(count($array_labirint)-1)) $_SESSION['player'][1] = (count($array_labirint)-1);
+        if ($_SESSION['player'][0]>(count($array_labirint)-1)) $_SESSION['player'][0] = (count($array_labirint)-1);
+    }
+    $man = $_SESSION['player'];
 
     foreach ($array_labirint as $i => $raw) {
         // поиск золота в строчках и столбцах
@@ -106,10 +124,15 @@ if (!isset($_SESSION['auth'])) {
         }
         echo "</div>";
     }
-    echo "<pre>";
+    /*echo "<pre>";
     print_r($array_labirint);
-    echo "</pre>";
+    echo "</pre>";*/
     ?>
-
+    <form action='game.php' method='post'>
+        <input type='submit' name='down' value='вниз' />
+        <input type='submit' name='up' value='вверх' />
+        <input type='submit' name='right' value='вправо' />
+        <input type='submit' name='left' value='влево' />
+    </form>
 </body>
 </html>
