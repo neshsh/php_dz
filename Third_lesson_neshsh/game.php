@@ -62,6 +62,14 @@ if (!isset($_SESSION['auth'])) {
     }
 
     $array_labirint = $_SESSION['matrix'];
+    foreach ($array_labirint as $l => $value) {
+        foreach ($value as $k => $n) {
+            if ($n==1) {
+                $count_wall[] = [$k, $l];
+            }
+        }
+    }
+    print_r($count_wall);
 
     // создаем управление игроком
 
@@ -77,6 +85,7 @@ if (!isset($_SESSION['auth'])) {
         if ($_SESSION['player'][1]>(count($array_labirint)-1)) $_SESSION['player'][1] = (count($array_labirint)-1);
         if ($_SESSION['player'][0]>(count($array_labirint)-1)) $_SESSION['player'][0] = (count($array_labirint)-1);
     }
+
     $man = $_SESSION['player'];
 
     foreach ($array_labirint as $i => $raw) {
@@ -106,8 +115,7 @@ if (!isset($_SESSION['auth'])) {
                     break;
                 case '1':
                     if ($man[0]==$j&&$man[1]==$i) {
-                        echo "<div class='player_wrong'> 🚶</div>";
-                        echo "<div class='inf'>На стены не лезьть!!</div>";
+                            echo "<div class='player_wrong'> 🚶</div>";
                     } else {
                         echo "<div class='cell_wall'></div>";
                     }
@@ -129,10 +137,11 @@ if (!isset($_SESSION['auth'])) {
     echo "</pre>";*/
     ?>
     <form action='game.php' method='post'>
-        <input type='submit' name='down' value='вниз' />
-        <input type='submit' name='up' value='вверх' />
-        <input type='submit' name='right' value='вправо' />
-        <input type='submit' name='left' value='влево' />
+        <input type='submit' name='down' value='&or;' />
+        <input type='submit' name='up' value='&and;' />
+        <input type='submit' name='left' value='<' />
+        <input type='submit' name='right' value='>' />
+
     </form>
 </body>
 </html>
