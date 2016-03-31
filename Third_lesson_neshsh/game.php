@@ -1,5 +1,4 @@
 <?php
-$_SESSION['array_labirint'] = create_matrix();
 session_start();
 ?>
 <!DOCTYPE html>
@@ -21,37 +20,36 @@ session_start();
     function create_matrix()
     {
         $array_labirint = array();
-        for ($y = 0; $y < 10; $y++) {
+        $side_length = 10;
+        for ($y = 0; $y < $side_length; $y++) {
             $array_labirint[] = [];
-            for ($x = 0; $x < 10; $x++) {
-                $array_labirint[$y][$x] = mt_rand(0, 1);
-                /*$is_it_gold = array_keys($array_labirint[$y], 2);
-                $how_much_gold = count(array_keys($array_labirint[$y], 2));
-                // set only one gold in raw:
-                if ($how_much_gold > 1) {
-                    for ($n = 1; $n < $how_much_gold; $n++) {
-                        $array_labirint[$y][$is_it_gold[$n]] = 0;
-                    }
-                }*/
-                //$a=[0,2];
-                //echo $a[mt_rand(0, count($a) - 1)];
+            for ($x = 0; $x < $side_length; $x++) {
+                $array = [0, 0, 1];
+                $array_labirint[$y][$x] = $array[mt_rand(0, 2)];
             }
-            $array_labirint[$y][mt_rand(0, 9)] = mt_rand(0, 1) ? '0' : '2';
+            $array_labirint[$y][mt_rand(0, ($side_length-1))] = mt_rand(0, 1) ? '0' : '2';
         }
         return $array_labirint;
     }
+    // запись двумерного массива в сессию
+    if (!isset($_SESSION['matrix'])) {
+        $_SESSION['matrix'] = create_matrix();
+    }
 
-    //$_SESSION['array_labirint'] = create_matrix();
-    $array_labirint = $_SESSION['array_labirint'];
+    $array_labirint = $_SESSION['matrix'];
 
     foreach ($array_labirint as $i => $raw) {
-        echo "<div class = 'raw'>";
-        foreach ($raw as $j => $value) {
-            for ($z=0; $z<count($array_labirint[$i]); $z++) {
-                if (($man[0]==$array_labirint[$z][$man[0]]&&($array_labirint[$z][$man[0]]==2))) {
+        // поиск золота в строчках и столбцах
+        foreach ($raw as $z => $golden) {
+                if (($man[0]==$z&&($golden==2))) {
                     echo "<div class='info'>В этом столбце спрятано золото<br /> Еще его можно найти в каждой строчке!!!</div>";
                 }
+                if (($man[1]==$i&&($golden==2))) {
+                    echo "<div class='info'>В этой строчке спрятано золото<br /></div>";
+                }
             }
+        echo "<div class = 'raw'>";
+        foreach ($raw as $j => $value) {
             switch ($value) {
                 case '0':
                     if ($man[0]==$j&&$man[1]==$i) {
