@@ -1,28 +1,24 @@
 <?php
 session_start();
-//echo $_SESSION['auth'] = [$_POST['username'], $_POST['password']];
-/*echo "<form action='game.php' method='post'>
-                    Username: <input type='text' name='username' value='' /><br />
-                    Password: <input type='password' name='password' value='' /><br /><br />
-                    <input type='submit' name='submit' value='submit' />
-              </form> ";
-echo $_POST['username'];
-if (isset($_POST['username']) && isset($_POST['password'])) {
-    $_SESSION['auth'] = $_POST['username'];
+//начальная страница form.php
+// новая игра, если не пошло
+if (isset($_POST['reboot'])) {
+    unset($_SESSION['gold']);
+    unset($_SESSION['player']);
+    unset($_SESSION['matrix']);
 }
-echo $_SESSION['auth'];*/
+// валидация формы
 if (!isset($_SESSION['auth'])) {
-    echo "<form action='game.php' method='post'>
-                    Username: <input type='text' name='username' value='' /><br />
-                    Password: <input type='password' name='password' value='' /><br /><br />
-                    <input type='submit' name='submit' value='submit' />
-              </form> ";
     if (isset($_POST['username']) && isset($_POST['password'])) {
         $_SESSION['auth'] = [$_POST['username'], $_POST['password']];
     }
 } else {
-   echo $_SESSION['auth'];
+    $_SESSION['auth'][0];
 }
+// счетчик золота ограниченные функции см.164 строку
+if (!isset($_SESSION['gold'])) $_SESSION['gold'] = 0;
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,15 +29,22 @@ if (!isset($_SESSION['auth'])) {
 </head>
 <body>
 <h1>Game Labirint</h1>
-<h2>Можно передвигаться по лабиринту с помощью GET запросов:  дописываем в адресе: ?x='ваши координаты'&&y='ваши координаты'</h2>
+<h2>Игрок: <span style="color: red;"><?php echo $_SESSION['auth'][0];?></span> </h2>
+<h3>Собрано золота: <span style="color: darkgoldenrod;"><?php echo $_SESSION['gold'];?></span> </h3>
+<div class="manage">
+    <h3>Управление игроком</h3>
+    <form action='game.php' method='post'>
+        <input id="down" type='submit' name='down' value='&or;' />
+        <input id="up" type='submit' name='up' value='&and;' />
+        <input id="left" type='submit' name='left' value='<' />
+        <input id="right" type='submit' name='right' value='>' />
+        <input id="reboot" type='submit' name='reboot' value='Новая игра'/>
+    </form>
+</div>
     <?php
-    //$man = array(1, 1);
-    //$man[0] = $_GET['x'];
-    //$man[1] = $_GET['y'];
-    //var_dump($man);
-    //$array_labirint = array();
-    if (!isset($_SESSION['gold'])) $_SESSION['gold'] = 0;
 
+
+    // функция создания массива
     function create_matrix()
     {
         $array_labirint = array();
@@ -60,7 +63,7 @@ if (!isset($_SESSION['auth'])) {
     if (!isset($_SESSION['matrix'])) {
         $_SESSION['matrix'] = create_matrix();
     }
-
+    // рисуем стенки для игрока
     $array_labirint = $_SESSION['matrix'];
     foreach ($array_labirint as $l => $value) {
         foreach ($value as $k => $n) {
@@ -69,17 +72,52 @@ if (!isset($_SESSION['auth'])) {
             }
         }
     }
-    print_r($count_wall);
+    //print_r($count_wall);
 
     // создаем управление игроком
 
     if (!isset($_SESSION['player'])) {
         $_SESSION['player'] = [0, 0];
     } else {
-        if (isset($_POST['down'])) $_SESSION['player'][1]++;
-        if (isset($_POST['up'])) $_SESSION['player'][1]--;
+        if (isset($_POST['down'])) {
+            $_SESSION['player'][1]++;
+            foreach ($count_wall as $dead_end) {
+                if ($_SESSION['player'] == $dead_end) {
+                    $_SESSION['player'][1]--;
+                    echo "<div class='inf'>На стены не лезьть!!!</div>";
+                }
+            }
+        }
+        if (isset($_POST['up'])) {
+            $_SESSION['player'][1]--;
+            foreach ($count_wall as $dead_end) {
+                if ($_SESSION['player'] == $dead_end) {
+                    $_SESSION['player'][1]++;
+                    echo "<div class='inf'>На стены не лезьть!!!</div>";
+                }
+            }
+        }
+        if (isset($_POST['right'])) {
+            $_SESSION['player'][0]++;
+            foreach ($count_wall as $dead_end) {
+                if ($_SESSION['player'] == $dead_end) {
+                    $_SESSION['player'][0]--;
+                    echo "<div class='inf'>На стены не лезьть!!!</div>";
+                }
+            }
+        }
+        if (isset($_POST['left'])) {
+            $_SESSION['player'][0]--;
+            foreach ($count_wall as $dead_end) {
+                if ($_SESSION['player'] == $dead_end) {
+                    $_SESSION['player'][0]++;
+                    echo "<div class='inf'>На стены не лезьть!!!</div>";
+                }
+            }
+        }
+        /*if (isset($_POST['up'])) $_SESSION['player'][1]--;
         if (isset($_POST['right'])) $_SESSION['player'][0]++;
-        if (isset($_POST['left'])) $_SESSION['player'][0]--;
+        if (isset($_POST['left'])) $_SESSION['player'][0]--;*/
         if ($_SESSION['player'][0]<0) $_SESSION['player'][0] = 0;
         if ($_SESSION['player'][1]<0) $_SESSION['player'][1] = 0;
         if ($_SESSION['player'][1]>(count($array_labirint)-1)) $_SESSION['player'][1] = (count($array_labirint)-1);
@@ -88,6 +126,7 @@ if (!isset($_SESSION['auth'])) {
 
     $man = $_SESSION['player'];
 
+    // рисуем сам лабиринт
     foreach ($array_labirint as $i => $raw) {
         // поиск золота в строчках и столбцах
         foreach ($raw as $z => $golden) {
@@ -115,15 +154,23 @@ if (!isset($_SESSION['auth'])) {
                     break;
                 case '1':
                     if ($man[0]==$j&&$man[1]==$i) {
-                            echo "<div class='player_wrong'> 🚶</div>";
+                        echo "<div class='player_wrong'> 🚶</div>";
+                        echo "<div class='inf'>Начните новую игру</div>";
                     } else {
                         echo "<div class='cell_wall'></div>";
                     }
                     break;
                 case '2':
+                    // не получилось сделать адекватный счетчик золота, не перезаписывает значение золота на пустое после сбора и не считает общее количество, все попытки это сделать потерпели фиаско, буду признателен за помощь
+
                     if ($man[0]==$j&&$man[1]==$i) {
                         echo "<div class='player_gold'>🚶</div>";
                         echo "<div class='inf'>Вы нашли золото!!!</div>";
+                        $_SESSION['gold']++;
+                        //$array_labirint[$i][$j] = 0;
+                        //if ($sum_gold = $_SESSION['gold']) {
+                        //    echo "<div class='win'>Вы победили!!!</div>";
+                        //}
                     } else {
                         echo "<div class='cell_free'></div>";
                     }
@@ -132,16 +179,13 @@ if (!isset($_SESSION['auth'])) {
         }
         echo "</div>";
     }
-    /*echo "<pre>";
-    print_r($array_labirint);
-    echo "</pre>";*/
-    ?>
-    <form action='game.php' method='post'>
-        <input type='submit' name='down' value='&or;' />
-        <input type='submit' name='up' value='&and;' />
-        <input type='submit' name='left' value='<' />
-        <input type='submit' name='right' value='>' />
 
-    </form>
+    ?>
+
+<?php
+/*echo "<pre>";
+print_r($array_labirint);
+echo "</pre>";
+*/?>
 </body>
 </html>

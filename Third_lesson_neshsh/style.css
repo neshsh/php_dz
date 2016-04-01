@@ -2,6 +2,15 @@ body {
     font-size: 16pt;
     text-align: center;
 }
+.manage {
+    position: absolute;
+    left: 500px;
+    top: 200px;
+    width: 300px;
+    height: 100px;
+    //background: red;
+    //border: 2px solid #000;
+}
 .raw {
     display:block;
     height: 52px;
@@ -42,20 +51,60 @@ body {
     background: gold;
 }
 .inf {
-    position: fixed;
-    right: 100px;
-    top: 200px;
+    position: absolute;
+    left: 550px;
+    top: 500px;
     width: 200px;
     height: 100px;
     background: red;
     border: 2px solid #000;
 }
 .info {
-    position: fixed;
-    right: 100px;
-    top: 300px;
+    position: absolute;
+    left: 550px;
+    top: 600px;
     width: 200px;
     height: 100px;
     background: gold;
     border: 2px solid #000;
+}
+.win {
+    position: absolute;
+    left: 550px;
+    top: 700px;
+    width: 200px;
+    height: 100px;
+    background: gold;
+    border: 2px solid #000;
+}
+
+#up {
+    position: absolute;
+    top: 70px;
+    left: 140px;
+    font-size: x-large;
+}
+#down {
+    position: absolute;
+    top: 150px;
+    left: 140px;
+    font-size: x-large;
+}
+#left {
+    position: absolute;
+    top: 110px;
+    left: 95px;
+    font-size: x-large;
+}
+#right {
+    position: absolute;
+    top: 110px;
+    left: 185px;
+    font-size: x-large;
+}
+#reboot {
+    position: absolute;
+    top: 230px;
+    left: 90px;
+    font-size: x-large;
 }
