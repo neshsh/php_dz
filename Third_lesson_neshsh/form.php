@@ -15,7 +15,7 @@ session_start();
 </head>
 <body>
 <form action='game.php' method='post'>
-    <label for="username">Username:</label>
+    <label for="username">Username: </label>
     <input type='text' name='username' value='' /><br /><br />
     <label for="password">Password:</label>
     <input type='password' name='password' value='' /><br /><br />
