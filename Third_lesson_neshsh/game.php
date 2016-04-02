@@ -4,8 +4,11 @@ session_start();
 // новая игра, если не пошло
 if (isset($_POST['reboot'])) {
     unset($_SESSION['gold']);
+    unset($_SESSION['sum_gold']);
     unset($_SESSION['player']);
     unset($_SESSION['matrix']);
+    unset($_SESSION['winner']);
+
 }
 // валидация формы
 if (!isset($_SESSION['auth'])) {
@@ -63,15 +66,30 @@ if (!isset($_SESSION['gold'])) $_SESSION['gold'] = 0;
     if (!isset($_SESSION['matrix'])) {
         $_SESSION['matrix'] = create_matrix();
     }
-    // рисуем стенки для игрока
+    // рисуем стенки для игрока, считаем золото
     $array_labirint = $_SESSION['matrix'];
     foreach ($array_labirint as $l => $value) {
         foreach ($value as $k => $n) {
-            if ($n==1) {
+            if ($n == 1) {
                 $count_wall[] = [$k, $l];
             }
         }
     }
+    // считаем золото
+    if (!isset($_SESSION['sum_gold'])) {
+        $_SESSION['sum_gold'] = 0;
+        foreach ($array_labirint as $e => $value) {
+            foreach ($value as $k => $n) {
+                if ($array_labirint[$e][$k] == 2) {
+
+                    $_SESSION['sum_gold']++;
+
+                }
+            }
+        }
+    }
+    $sum = $_SESSION['sum_gold'];
+    //echo $sum;
     //print_r($count_wall);
 
     // создаем управление игроком
@@ -161,24 +179,27 @@ if (!isset($_SESSION['gold'])) $_SESSION['gold'] = 0;
                     }
                     break;
                 case '2':
-                    // не получилось сделать адекватный счетчик золота, не перезаписывает значение золота на пустое после сбора и не считает общее количество, все попытки это сделать потерпели фиаско, буду признателен за помощь
-
                     if ($man[0]==$j&&$man[1]==$i) {
                         echo "<div class='player_gold'>🚶</div>";
-                        echo "<div class='inf'>Вы нашли золото!!!</div>";
+                        echo "<div class='inf'>Вы нашли золото!!!"."Всего золота: ".$sum."</div>";
                         $_SESSION['gold']++;
-                        //$array_labirint[$i][$j] = 0;
-                        //if ($sum_gold = $_SESSION['gold']) {
-                        //    echo "<div class='win'>Вы победили!!!</div>";
-                        //}
+                        $_SESSION['matrix'][$i][$j] = 0;
+                        if ($sum == $_SESSION['gold']) {
+                            //echo "<div class='win'>Вы победили!!!</div>";
+                            $_SESSION['winner'] = "<div class='win'>Вы победили!!! Начните новую игру!</div>";
+                            //$win_player = $_SESSION['winner'];
+                        }
                     } else {
                         echo "<div class='cell_free'></div>";
                     }
                     break;
             }
+            //echo $winner_player;
         }
         echo "</div>";
     }
+    echo $_SESSION['winner'];
+
 
     ?>
 
